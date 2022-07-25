@@ -1,6 +1,8 @@
 #include "calculator.h"
 #include "./ui_calculator.h"
 
+double firstValue;
+
 Calculator::Calculator(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Calculator)
@@ -18,12 +20,12 @@ Calculator::Calculator(QWidget *parent)
     connect(ui->Button8, SIGNAL(released()), this, SLOT(numberPressed()));
     connect(ui->Button9, SIGNAL(released()), this, SLOT(numberPressed()));
 
-    connect(ui->ButtonAdd, SIGNAL(released()), this, SLOT(symbolPressed()));
-    connect(ui->ButtonSubstract, SIGNAL(released()), this, SLOT(symbolPressed()));
-    connect(ui->ButtonMultiply, SIGNAL(released()), this, SLOT(symbolPressed()));
-    connect(ui->ButtonDivision, SIGNAL(released()), this, SLOT(symbolPressed()));
-    connect(ui->ButtonPercentage, SIGNAL(released()), this, SLOT(symbolPressed()));
+    ui->ButtonAdd->setCheckable(true);
+    ui->ButtonSubstract->setCheckable(true);
+    ui->ButtonMultiply->setCheckable(true);
+    ui->ButtonDivision->setCheckable(true);
 
+    connect(ui->ButtonClear, SIGNAL(released()), this, SLOT(clearInput()));
     connect(ui->ButtonEqual, SIGNAL(released()), this, SLOT(equalPressed()));
 }
 
@@ -37,77 +39,73 @@ void Calculator::numberPressed()
     QPushButton *button = (QPushButton*)sender();
     QString buttonValue = button->text();
     QString displayValue = ui->Display->text();
-    QString newValue = displayValue + buttonValue;
-     ui->Display->setText(QString::number(newValue.toDouble(),'g', 11));
-}
-
-double firstValue = 0.0;
-bool addFlag = false;
-bool substractFlag = false;
-bool multipleFlag = false;
-bool divisionFlag = false;
-bool percentageFlag = false;
-
-
-void Calculator::symbolPressed()
-{
-    bool addFlag = false;
-    bool substractFlag = false;
-    bool multipleFlag = false;
-    bool divisionFlag = false;
-    bool percentageFlag = false;
-
-    QString displayValue = ui->Display->text();
-    firstValue = displayValue.toDouble();
-    QPushButton *button = (QPushButton*)sender();
-    QString buttonValue = button->text();
-    if (QString::compare(buttonValue, "+") == 0)
+    QString valueToDisplay;
+    double newValue;
+    if (ui->ButtonAdd->isChecked() || ui->ButtonSubstract->isChecked()
+            || ui->ButtonMultiply->isChecked() || ui->ButtonDivision->isChecked())
     {
-        addFlag = true;
-    }
-    else if (QString::compare(buttonValue, "-") == 0)
-    {
-        substractFlag = true;
-    }
-    else if (QString::compare(buttonValue, "*") == 0)
-    {
-        multipleFlag = true;
-    }
-    else if (QString::compare(buttonValue, "/") == 0)
-    {
-        divisionFlag = true;
+        newValue = buttonValue.toDouble();
     }
     else
     {
-        percentageFlag = true;
+        newValue = (displayValue + buttonValue).toDouble();
     }
-    ui->Display->setText("");
+    valueToDisplay = QString::number(newValue, 'g', 10);
+    ui->Display->setText(valueToDisplay);
+}
+
+void Calculator::symbolPressed()
+{
+    QPushButton *button = (QPushButton*)sender();
+    firstValue = ui->Display->text().toDouble();
+    button->setChecked(true);
+
+}
+
+void Calculator::on_ButtonComma_released()
+{
+    ui->Display->setText(ui->Display->text() + ".");
 }
 
 void Calculator::equalPressed()
 {
-    QString displayValue = ui->Display->text();
-    double dblDisplayValue = displayValue.toDouble();
-    double result =  0.0;
-    if (addFlag)
+    double result;
+    QString newValue;
+    double displayValue = ui->Display->text().toDouble();
+
+    if (ui->ButtonAdd->isChecked())
     {
-        result =  firstValue + dblDisplayValue;
+        result = firstValue + displayValue;
+        newValue = QString::number(result,'g', 10);
+        ui->Display->setText(newValue);
+        ui->ButtonAdd->setChecked(false);
     }
-    else if (substractFlag)
+    else if (ui->ButtonSubstract->isChecked())
     {
-        result = firstValue - dblDisplayValue;
+        result = firstValue - displayValue;
+        newValue = QString::number(result,'g', 10);
+        ui->Display->setText(newValue);
+        ui->ButtonSubstract->setChecked(false);
     }
-    else if (multipleFlag)
+    else if (ui->ButtonMultiply->isChecked())
     {
-        result = firstValue * dblDisplayValue;
+        result = firstValue * displayValue;
+        newValue = QString::number(result,'g', 10);
+        ui->Display->setText(newValue);
+        ui->ButtonMultiply->setChecked(false);
     }
-    else if (divisionFlag)
+    else if (ui->ButtonDivision->isChecked())
     {
-        result = firstValue / dblDisplayValue;
+        result = firstValue / displayValue;
+        newValue = QString::number(result,'g', 10);
+        ui->Display->setText(newValue);
+        ui->ButtonDivision->setChecked(false);
     }
-    else
-    {
-        result = (firstValue * dblDisplayValue) / 100;
-    }
-    ui->Display->setText(QString::number(result));
+}
+
+void Calculator::clearInput()
+{
+    ui->Display->clear();
+    double firstValue = 0;
+    ui->Display->setText(QString::number(firstValue));
 }
