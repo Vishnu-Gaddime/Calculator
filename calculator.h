@@ -21,9 +21,10 @@ private:
 private slots:
     void numberPressed();
     void symbolPressed();
+    void changeSignPressed();
+    void equalPressed();
     void on_ButtonComma_released();
     void clearInput();
 
-    void equalPressed();
 };
 #endif // CALCULATOR_H
