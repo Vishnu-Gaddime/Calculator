@@ -1,8 +1,10 @@
 #include "calculator.h"
 #include "./ui_calculator.h"
+#include <algorithm>
 
 double firstValue;
 bool secondNumberFlag = false;
+bool waitingForOperand = false;
 
 Calculator::Calculator(QWidget *parent)
     : QMainWindow(parent)
@@ -35,7 +37,13 @@ Calculator::Calculator(QWidget *parent)
 
     connect(ui->ButtonChangeSign, SIGNAL(released()), this, SLOT(changeSignPressed()));
     connect(ui->ButtonEqual, SIGNAL(released()), this, SLOT(equalPressed()));
+    connect(ui->BackSpace, SIGNAL(released()), this, SLOT(backspaceClicked()));
     connect(ui->ButtonClear, SIGNAL(released()), this, SLOT(clearInput()));
+
+    connect(ui->ButtonSqrt, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
+    connect(ui->ButtonInverse, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
+    connect(ui->ButtonSquare, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
+    connect(ui->ButtonCube, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
 }
 
 Calculator::~Calculator()
@@ -48,13 +56,23 @@ void Calculator::numberPressed()
     QPushButton *button = (QPushButton*)sender();
     double numbers;
     QString numberTODisplay;
-    if ((ui->ButtonAdd->isChecked() || ui->ButtonSubstract->isChecked()
+    if (ui->Display->text() == "0" && button->text().toInt() == 0.0)
+    {
+            return;
+    }
+    else if ((ui->ButtonAdd->isChecked() || ui->ButtonSubstract->isChecked()
             || ui->ButtonMultiply->isChecked() || ui->ButtonDivision->isChecked()
             || ui->ButtonPercentage->isChecked()) && (!secondNumberFlag))
     {
         numbers = button->text().toDouble();
         secondNumberFlag = true;
         numberTODisplay = QString::number(numbers, 'g', 10);
+    }
+    else if (waitingForOperand)
+    {
+        numbers = button->text().toDouble();
+        ui->Display->setText(QString::number(numbers, 'g', 10));
+        waitingForOperand = false;
     }
     else
     {
@@ -138,6 +156,55 @@ void Calculator::on_ButtonComma_released()
     {
         ui->Display->setText(ui->Display->text() + ".");
     }
+}
+
+void Calculator::unaryOperatorPressed()
+{
+    QPushButton *button = (QPushButton*)sender();
+    double result = 0.0;
+    double operand = ui->Display->text().toDouble();
+    if (button->text() == "√")
+    {
+        if (operand < 0.0 || operand < 0)
+        {
+            clearInput();
+            return;
+        }
+        result = std::sqrt(operand);
+    }
+    else if (button->text() == "1/x")
+    {
+        if (operand == 0.0)
+        {
+            clearInput();
+            return;
+        }
+        result = 1.0 / operand;
+    }
+    else if (button->text() == "x² ")
+    {
+            result = std::pow(operand, 2.0);
+    }
+    else if (button->text() == "x³")
+    {
+            result = std::pow(operand, 3.0);
+    }
+    ui->Display->setText(QString::number(result, 'g', 10));
+    waitingForOperand = true;
+}
+
+void Calculator::backspaceClicked()
+{
+    if (waitingForOperand)
+        return;
+
+    QString number = ui->Display->text();
+    number.chop(1);
+    if (number.isEmpty()) {
+        number = "0";
+        waitingForOperand = true;
+    }
+    ui->Display->setText(number);
 }
 
 void Calculator::clearInput()

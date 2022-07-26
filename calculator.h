@@ -24,6 +24,8 @@ private slots:
     void changeSignPressed();
     void equalPressed();
     void on_ButtonComma_released();
+    void unaryOperatorPressed();
+    void backspaceClicked();
     void clearInput();
 
 };
