@@ -62,16 +62,11 @@ void Calculator::numberPressed()
     }
     else if ((ui->ButtonAdd->isChecked() || ui->ButtonSubstract->isChecked()
             || ui->ButtonMultiply->isChecked() || ui->ButtonDivision->isChecked()
-            || ui->ButtonPercentage->isChecked()) && (!secondNumberFlag))
+            || ui->ButtonPercentage->isChecked()) || waitingForOperand && (!secondNumberFlag))
     {
         numbers = button->text().toDouble();
         secondNumberFlag = true;
         numberTODisplay = QString::number(numbers, 'g', 10);
-    }
-    else if (waitingForOperand)
-    {
-        numbers = button->text().toDouble();
-        ui->Display->setText(QString::number(numbers, 'g', 10));
         waitingForOperand = false;
     }
     else
