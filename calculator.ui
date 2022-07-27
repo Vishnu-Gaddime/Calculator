@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
+    <width>301</width>
     <height>340</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
       <x>0</x>
       <y>0</y>
       <width>301</width>
-      <height>91</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
@@ -912,6 +912,74 @@ QPushButton:pressed{
     </property>
     <property name="text">
      <string>⌫</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Display2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>50</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{
+			background-color: #FFFFFF;
+			border: 1px solid gray;
+			color: #000000
+}
+</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="DisplayEqualSign">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>50</y>
+      <width>31</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{
+			background-color: #FFFFFF;
+			border: 1px solid gray;
+			color: #000000
+}
+</string>
+    </property>
+    <property name="text">
+     <string>=</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

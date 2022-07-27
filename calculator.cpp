@@ -5,6 +5,7 @@
 double firstValue;
 bool secondNumberFlag = false;
 bool waitingForOperand = false;
+bool equalButtonPressed = false;
 
 Calculator::Calculator(QWidget *parent)
     : QMainWindow(parent)
@@ -62,10 +63,11 @@ void Calculator::numberPressed()
     }
     else if ((ui->ButtonAdd->isChecked() || ui->ButtonSubstract->isChecked()
             || ui->ButtonMultiply->isChecked() || ui->ButtonDivision->isChecked()
-            || ui->ButtonPercentage->isChecked()) || waitingForOperand && (!secondNumberFlag))
+            || ui->ButtonPercentage->isChecked() || waitingForOperand) && (!secondNumberFlag))
     {
         numbers = button->text().toDouble();
-        secondNumberFlag = true;
+        if (!waitingForOperand)
+            secondNumberFlag = true;
         numberTODisplay = QString::number(numbers, 'g', 10);
         waitingForOperand = false;
     }
@@ -106,7 +108,15 @@ void Calculator::changeSignPressed()
 void Calculator::equalPressed()
 {
     double result;
-    double displayValue = ui->Display->text().toDouble();
+    double displayValue;
+    if (equalButtonPressed)
+    {
+        displayValue = ui->Display2->text().toDouble();
+    }
+    else
+    {
+        displayValue = ui->Display->text().toDouble();
+    }
 
     if (ui->ButtonAdd->isChecked())
     {
@@ -138,7 +148,8 @@ void Calculator::equalPressed()
         result = displayValue;
     }
     secondNumberFlag = false;
-    ui->Display->setText(QString::number(result,'g', 10));
+    ui->Display2->setText(QString::number(result,'g', 10));
+    equalButtonPressed = true;
 }
 
 void Calculator::on_ButtonComma_released()
@@ -184,7 +195,7 @@ void Calculator::unaryOperatorPressed()
     {
             result = std::pow(operand, 3.0);
     }
-    ui->Display->setText(QString::number(result, 'g', 10));
+    ui->Display2->setText(QString::number(result, 'g', 10));
     waitingForOperand = true;
 }
 
@@ -211,4 +222,5 @@ void Calculator::clearInput()
 
     secondNumberFlag = false;
     ui->Display->setText("0");
+    ui->Display2->setText("0");
 }
