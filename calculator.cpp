@@ -1,8 +1,10 @@
 #include "calculator.h"
 #include "./ui_calculator.h"
 #include <algorithm>
+#include <stack>
 
 double firstValue;
+double results;
 bool secondNumberFlag = false;
 bool waitingForOperand = false;
 bool equalButtonPressed = false;
@@ -89,8 +91,16 @@ void Calculator::numberPressed()
 void Calculator::symbolPressed()
 {
     QPushButton *button = (QPushButton*)sender();
-    firstValue = ui->Display->text().toDouble();
+    if (equalButtonPressed)
+    {
+        firstValue = ui->Display2->text().toDouble();
+    }
+    else
+    {
+        firstValue = ui->Display->text().toDouble();
+    }
     button->setChecked(true);
+
 }
 
 void Calculator::changeSignPressed()
@@ -109,14 +119,15 @@ void Calculator::equalPressed()
 {
     double result;
     double displayValue;
-    if (equalButtonPressed)
-    {
-        displayValue = ui->Display2->text().toDouble();
-    }
-    else
-    {
-        displayValue = ui->Display->text().toDouble();
-    }
+//    if (equalButtonPressed && ui->Display->text() != "0")
+//    {
+//        displayValue = ui->Display->text().toDouble();
+//    }
+//    else
+//    {
+//        displayValue = ui->Display->text().toDouble();
+//    }
+    displayValue = ui->Display->text().toDouble();
 
     if (ui->ButtonAdd->isChecked())
     {
@@ -147,6 +158,7 @@ void Calculator::equalPressed()
     {
         result = displayValue;
     }
+    results = result;
     secondNumberFlag = false;
     ui->Display2->setText(QString::number(result,'g', 10));
     equalButtonPressed = true;
@@ -221,6 +233,8 @@ void Calculator::clearInput()
     ui->ButtonDivision->setChecked(false);
 
     secondNumberFlag = false;
+    equalButtonPressed = false;
+    waitingForOperand = false;
     ui->Display->setText("0");
     ui->Display2->setText("0");
 }
