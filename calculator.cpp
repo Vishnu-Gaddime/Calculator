@@ -1,13 +1,15 @@
 #include "calculator.h"
 #include "./ui_calculator.h"
 #include <algorithm>
-#include <stack>
+#include <vector>
 
 double firstValue;
 double results;
 bool secondNumberFlag = false;
 bool waitingForOperand = false;
 bool equalButtonPressed = false;
+std::vector<std::string> stack;
+std::string stackString;
 
 Calculator::Calculator(QWidget *parent)
     : QMainWindow(parent)
@@ -72,17 +74,24 @@ void Calculator::numberPressed()
             secondNumberFlag = true;
         numberTODisplay = QString::number(numbers, 'g', 10);
         waitingForOperand = false;
+        stackString = std::to_string(numbers);
+        stack.push_back(stackString);
     }
     else
     {
         if (ui->Display->text().contains('.') && button->text() == "0")
         {
             numberTODisplay = ui->Display->text() + button->text();
+            stackString = numberTODisplay.toStdString();
+            stack.push_back(stackString);
+
         }
         else
         {
             numbers = (ui->Display->text() + button->text()).toDouble();
             numberTODisplay = QString::number(numbers, 'g', 10);
+            stackString = std::to_string(numbers);
+            stack.push_back(stackString);
         }
     }
     ui->Display->setText(numberTODisplay);
@@ -100,6 +109,23 @@ void Calculator::symbolPressed()
         firstValue = ui->Display->text().toDouble();
     }
     button->setChecked(true);
+
+    if (ui->ButtonAdd->isChecked())
+    {
+        stack.push_back("+");
+    }
+    else if (ui->ButtonSubstract->isChecked())
+    {
+        stack.push_back("-");
+    }
+    else if (ui->ButtonDivision->isChecked())
+    {
+        stack.push_back("/");
+    }
+    if (ui->ButtonMultiply->isChecked())
+    {
+        stack.push_back("*");
+    }
 
 }
 
@@ -127,38 +153,59 @@ void Calculator::equalPressed()
 //    {
 //        displayValue = ui->Display->text().toDouble();
 //    }
-    displayValue = ui->Display->text().toDouble();
+   // displayValue = ui->Display->text().toDouble();
 
-    if (ui->ButtonAdd->isChecked())
+//    if (ui->ButtonAdd->isChecked())
+//    {
+//        result = firstValue + displayValue;
+//        ui->ButtonAdd->setChecked(false);
+//    }
+//    else if (ui->ButtonSubstract->isChecked())
+//    {
+//        result = firstValue - displayValue;
+//        ui->ButtonSubstract->setChecked(false);
+//    }
+//    else if (ui->ButtonMultiply->isChecked())
+//    {
+//        result = firstValue * displayValue;
+//        ui->ButtonMultiply->setChecked(false);
+//    }
+//    else if (ui->ButtonDivision->isChecked())
+//    {
+//        result = firstValue / displayValue;
+//        ui->ButtonDivision->setChecked(false);
+//    }
+//    else if (ui->ButtonPercentage->isChecked())
+//    {
+//        result = (firstValue * displayValue) / 100;
+//        ui->ButtonPercentage->setChecked(false);
+//    }
+//    else
+//    {
+//        result = displayValue;
+//    }
+
+    for (int i = 0; i < stack.size(); i++)
     {
-        result = firstValue + displayValue;
-        ui->ButtonAdd->setChecked(false);
+        if (stack[i] == "+")
+        {
+            result = std::stod(stack[i-1]) + std::stod(stack[i+1]);
+        }
+        else if (stack[i] == "-")
+        {
+            result = std::stod(stack[i-1]) - std::stod(stack[i+1]);
+        }
+        else if (stack[i] == "*")
+        {
+            result = std::stod(stack[i-1]) * std::stod(stack[i+1]);
+        }
+        else if (stack[i] == "/")
+        {
+            result = std::stod(stack[i-1]) - std::stod(stack[i+1]);
+        }
     }
-    else if (ui->ButtonSubstract->isChecked())
-    {
-        result = firstValue - displayValue;
-        ui->ButtonSubstract->setChecked(false);
-    }
-    else if (ui->ButtonMultiply->isChecked())
-    {
-        result = firstValue * displayValue;
-        ui->ButtonMultiply->setChecked(false);
-    }
-    else if (ui->ButtonDivision->isChecked())
-    {
-        result = firstValue / displayValue;
-        ui->ButtonDivision->setChecked(false);
-    }
-    else if (ui->ButtonPercentage->isChecked())
-    {
-        result = (firstValue * displayValue) / 100;
-        ui->ButtonPercentage->setChecked(false);
-    }
-    else
-    {
-        result = displayValue;
-    }
-    results = result;
+
+   // results = result;
     secondNumberFlag = false;
     ui->Display2->setText(QString::number(result,'g', 10));
     equalButtonPressed = true;
