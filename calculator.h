@@ -18,9 +18,9 @@ public:
 private:
     Ui::Calculator *ui;
 
+
 private slots:
     void numberPressed();
-    void symbolPressed();
     void changeSignPressed();
     void equalPressed();
     void on_ButtonComma_released();

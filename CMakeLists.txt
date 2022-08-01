@@ -19,6 +19,8 @@ set(PROJECT_SOURCES
         calculator.cpp
         calculator.h
         calculator.ui
+        postfix.cpp
+        postfix.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
