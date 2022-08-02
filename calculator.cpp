@@ -28,7 +28,6 @@ Calculator::Calculator(QWidget *parent)
     connect(ui->ButtonSubstract, SIGNAL(released()), this, SLOT(numberPressed()));
     connect(ui->ButtonMultiply, SIGNAL(released()), this, SLOT(numberPressed()));
     connect(ui->ButtonDivision, SIGNAL(released()), this, SLOT(numberPressed()));
-    connect(ui->ButtonPercentage, SIGNAL(released()), this, SLOT(numberPressed()));
 
     connect(ui->ButtonChangeSign, SIGNAL(released()), this, SLOT(changeSignPressed()));
     connect(ui->ButtonEqual, SIGNAL(released()), this, SLOT(equalPressed()));
@@ -39,6 +38,7 @@ Calculator::Calculator(QWidget *parent)
     connect(ui->ButtonInverse, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
     connect(ui->ButtonSquare, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
     connect(ui->ButtonCube, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
+    connect(ui->ButtonPercentage, SIGNAL(released()), this, SLOT(unaryOperatorPressed()));
 }
 
 Calculator::~Calculator()
@@ -61,7 +61,14 @@ void Calculator::changeSignPressed()
     double newNumber;
     if (button->text() == "+/-")
     {
-        newNumber = ui->Display->text().toDouble();
+        if (ui->Display2->text() != "")
+        {
+            newNumber = ui->Display2->text().toDouble();
+        }
+        else
+        {
+            newNumber = ui->Display->text().toDouble();
+        }
         newNumber = newNumber * -1;
         ui->Display->setText(QString::number(newNumber, 'g', 10));
     }
@@ -71,14 +78,13 @@ void Calculator::equalPressed()
 {
     numberPressed();
     std::string stackString = ui->Display->text().toStdString();
-    std::string postExp = convert(stackString);
-    double result = calculate_Postfix(postExp);
+    double result = EvaluateExpression(stackString);
     ui->Display2->setText(QString::number(result,'g',15));
 }
 
 void Calculator::on_ButtonComma_released()
 {
-     ui->Display->setText(ui->Display->text() + ".");
+    ui->Display->setText(ui->Display->text()+'.');
 }
 
 void Calculator::unaryOperatorPressed()
@@ -120,6 +126,10 @@ void Calculator::unaryOperatorPressed()
     else if (button->text() == "x³")
     {
             result = std::pow(operand, 3.0);
+    }
+    else if (button->text() == "%")
+    {
+        result = operand * 0.01;
     }
 
     ui->Display2->setText(QString::number(result, 'g', 10));
