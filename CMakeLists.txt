@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
         calculator.ui
         postfix.cpp
         postfix.h
+        catch.hpp
+        test.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

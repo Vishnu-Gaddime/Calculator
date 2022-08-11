@@ -17,6 +17,7 @@ int precedence(char op) {
     }
     return -1;
 }
+
 char associativity(char op) {
     switch (op) {
     case '-':return 'L';
@@ -143,7 +144,6 @@ double result(double a, double b, string o) {
 }
 double EvaluateExpression(string exp) {
     string postfix = to_postfix(exp); //postfix has spaces but no ()
-    cout<<"Postfix = "<< postfix<<"\n\n";
     regex regex(R"([\s]+)");
     vector<std::string> out( // save all space-separated operands and operators to out
         sregex_token_iterator(postfix.begin(), postfix.end(), regex, -1),
@@ -153,12 +153,6 @@ double EvaluateExpression(string exp) {
     //Note : unary plus is always ignored
     vector <double> Operand;
     for (auto i : out) {
-//        if (i == "m") { //unary minus
-//            double a = Operand.back();
-//            Operand.pop_back();
-//            Operand.push_back(a * -1);
-//        }
-//        else {
             if (i == "*" || i == "/" || i == "+" || i == "-" || i == "^") {
                 double b = Operand.back();
                 Operand.pop_back();
@@ -169,7 +163,6 @@ double EvaluateExpression(string exp) {
             else {
                 Operand.push_back(stod(i));
             }
-        //}
     }
     return Operand.back();
 }
