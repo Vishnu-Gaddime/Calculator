@@ -1,6 +1,7 @@
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 #include "postfix.h"
+#include <cmath>
+#include <QString>
 
 TEST_CASE("precendence","[char]"){
     REQUIRE(precedence('+') == 2);
@@ -35,9 +36,9 @@ TEST_CASE("modify", "[string]"){
 }
 
 TEST_CASE("postfix_exp", "[string]"){
-    REQUIRE(to_postfix("12") == "12");
-    REQUIRE(to_postfix(" 1 2 + 3 4 - 8") == "12 34 + 8 -");
-    REQUIRE(to_postfix("12+") == "12 +");
+    REQUIRE(to_postfix("12") == "12 ");
+    REQUIRE(to_postfix(" 1 2 + 3 4 - 8") == "12 34 + 8 - ");
+    REQUIRE(to_postfix("12+") == "12 + ");
 }
 
 TEST_CASE("evaluate", "[string]"){
