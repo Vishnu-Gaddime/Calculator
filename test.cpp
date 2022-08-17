@@ -42,5 +42,5 @@ TEST_CASE("postfix_exp", "[string]"){
 }
 
 TEST_CASE("evaluate", "[string]"){
-    REQUIRE(EvaluateExpression("12 34 + 8 -") == 38);
+    REQUIRE(EvaluateExpression(" 1 2 + 3 4 - 8") == 38);
 }
